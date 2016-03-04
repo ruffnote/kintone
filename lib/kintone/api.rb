@@ -29,10 +29,16 @@ class Kintone::Api
     :bulk
   ].freeze
 
-  def initialize(domain, user, password)
+  def initialize(domain, user, password, basic_user=nil, basic_password=nil)
     token = Base64.encode64("#{user}:#{password}")
     url = "https://#{domain}"
     headers = { 'X-Cybozu-Authorization' => token }
+
+    if basic_user.present? && basic_password.present?
+      basic_token = Base64.encode64("#{basic_user}:#{basic_password}")
+      headers['Authorization'] = "Basic: #{basic_token}"
+    end
+
     @connection =
       Faraday.new(url: url, headers: headers) do |builder|
         builder.adapter :net_http
