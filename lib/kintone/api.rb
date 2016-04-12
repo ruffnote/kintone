@@ -30,14 +30,24 @@ class Kintone::Api
   ].freeze
 
   def initialize(domain, user, password, basic_user=nil, basic_password=nil)
+
     token = Base64.encode64("#{user}:#{password}")
     url = "https://#{domain}"
     headers = { 'X-Cybozu-Authorization' => token }
 
     if basic_user.present? && basic_password.present?
-      basic_token = Base64.encode64("#{basic_user}:#{basic_password}")
-      headers['Authorization'] = "Basic: #{basic_token}"
+      #basic_token = Base64.encode64("#{basic_user}:#{basic_password}")
+      #headers['Authorization'] = "Basic: #{basic_token}"
+      url = "https://#{basic_user}:#{basic_password}@#{domain}"
     end
+
+    #domain2 = "https://#{basic_user}:#{basic_password}@#{ENV['KINTONE_HOST']}"
+    #domain2 = "https://#{ENV['KINTONE_HOST']}:443"
+    #res = `curl -X GET "#{domain2}/k/v1/apps.json" \
+    #-H "Authorization: #{headers['Authorization']}" \
+    #-H "X-Cybozu-Authorization: #{headers['X-Cybozu-Authorization']}"`
+
+    #raise res.inspect
 
     @connection =
       Faraday.new(url: url, headers: headers) do |builder|
