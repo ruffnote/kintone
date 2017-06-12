@@ -25,7 +25,11 @@ describe Kintone::Api::Guest do
           headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' },
           query: params
         )
-        .to_return(body: "{\"abc\":\"def\"}", status: 200)
+        .to_return(
+          body: '{"abc":"def"}',
+          status: 200,
+          headers: { 'Content-type' => 'application/json' }
+        )
     end
 
     subject { target.get(path, params) }
@@ -34,6 +38,25 @@ describe Kintone::Api::Guest do
     let(:params) { { p1: 'abc', p2: 'def' } }
 
     it { expect(subject).to eq 'abc' => 'def' }
+
+    context 'fail to request' do
+      before(:each) do
+        stub_request(
+          :get,
+          'https://example.cybozu.com/k/guest/1/v1/path.json'
+        )
+          .with(
+            headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' },
+            query: params
+          )
+          .to_return(
+            body: '{"message":"不正なJSON文字列です。","id":"1505999166-897850006","code":"CB_IJ01"}',
+            status: 500
+          )
+      end
+
+      it { expect { subject }.to raise_error Kintone::KintoneError }
+    end
   end
 
   describe '#post' do
@@ -44,9 +67,13 @@ describe Kintone::Api::Guest do
       )
         .with(
           headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' },
-          body: "{\"p1\":\"abc\",\"p2\":\"def\"}"
+          body: '{"p1":"abc","p2":"def"}'
         )
-        .to_return(body: "{\"abc\":\"def\"}", status: 200)
+        .to_return(
+          body: '{"abc":"def"}',
+          status: 200,
+          headers: { 'Content-type' => 'application/json' }
+        )
     end
 
     subject { target.post(path, body) }
@@ -55,6 +82,25 @@ describe Kintone::Api::Guest do
     let(:body) { { 'p1' => 'abc', 'p2' => 'def' } }
 
     it { expect(subject).to eq 'abc' => 'def' }
+
+    context 'fail to request' do
+      before(:each) do
+        stub_request(
+          :post,
+          'https://example.cybozu.com/k/guest/1/v1/path.json'
+        )
+          .with(
+            headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' },
+            body: '{"p1":"abc","p2":"def"}'
+          )
+          .to_return(
+            body: '{"message":"不正なJSON文字列です。","id":"1505999166-897850006","code":"CB_IJ01"}',
+            status: 500
+          )
+      end
+
+      it { expect { subject }.to raise_error Kintone::KintoneError }
+    end
   end
 
   describe '#put' do
@@ -65,9 +111,13 @@ describe Kintone::Api::Guest do
       )
         .with(
           headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' },
-          body: "{\"p1\":\"abc\",\"p2\":\"def\"}"
+          body: '{"p1":"abc","p2":"def"}'
         )
-        .to_return(body: "{\"abc\":\"def\"}", status: 200)
+        .to_return(
+          body: '{"abc":"def"}',
+          status: 200,
+          headers: { 'Content-type' => 'application/json' }
+        )
     end
 
     subject { target.put(path, body) }
@@ -76,6 +126,25 @@ describe Kintone::Api::Guest do
     let(:body) { { 'p1' => 'abc', 'p2' => 'def' } }
 
     it { expect(subject).to eq 'abc' => 'def' }
+
+    context 'fail to request' do
+      before(:each) do
+        stub_request(
+          :put,
+          'https://example.cybozu.com/k/guest/1/v1/path.json'
+        )
+          .with(
+            headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' },
+            body: '{"p1":"abc","p2":"def"}'
+          )
+          .to_return(
+            body: '{"message":"不正なJSON文字列です。","id":"1505999166-897850006","code":"CB_IJ01"}',
+            status: 500
+          )
+      end
+
+      it { expect { subject }.to raise_error Kintone::KintoneError }
+    end
   end
 
   describe '#delete' do
@@ -88,7 +157,11 @@ describe Kintone::Api::Guest do
           body: { 'p1' => 'abc', 'p2' => 'def' }.to_json,
           headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' }
         )
-        .to_return(body: "{\"abc\":\"def\"}", status: 200)
+        .to_return(
+          body: '{"abc":"def"}',
+          status: 200,
+          headers: { 'Content-type' => 'application/json' }
+        )
     end
 
     subject { target.delete(path, params) }
@@ -97,6 +170,25 @@ describe Kintone::Api::Guest do
     let(:params) { { 'p1' => 'abc', 'p2' => 'def' } }
 
     it { expect(subject).to eq 'abc' => 'def' }
+
+    context 'fail to request' do
+      before(:each) do
+        stub_request(
+          :delete,
+          'https://example.cybozu.com/k/guest/1/v1/path.json'
+        )
+          .with(
+            body: { 'p1' => 'abc', 'p2' => 'def' }.to_json,
+            headers: { 'X-Cybozu-Authorization' => 'QWRtaW5pc3RyYXRvcjpjeWJvenU=' }
+          )
+          .to_return(
+            body: '{"message":"不正なJSON文字列です。","id":"1505999166-897850006","code":"CB_IJ01"}',
+            status: 500
+          )
+      end
+
+      it { expect { subject }.to raise_error Kintone::KintoneError }
+    end
   end
 
   describe '#record' do
