@@ -13,6 +13,7 @@ class Kintone::Command
   autoload :SpaceBody, 'kintone/command/space_body'
   autoload :SpaceThread, 'kintone/command/space_thread'
   autoload :SpaceMembers, 'kintone/command/space_members'
+  autoload :File, 'kintone/command/file'
 
   # other than guest
   autoload :TemplateSpace, 'kintone/command/template_space'
@@ -76,6 +77,10 @@ class Kintone::Command
       SpaceMembers.new(api)
     end
 
+    def file(api)
+      File.new(api)
+    end
+
     # other than guest
     def template_space(api)
       TemplateSpace.new(api)
@@ -94,6 +99,6 @@ class Kintone::Command
       SpaceGuests.new(api)
     end
 
-    alias_method :bulk, :bulk_request
+    alias bulk bulk_request
   end
 end

@@ -15,27 +15,31 @@ describe Kintone::Command::Apps do
           'https://example.cybozu.com/k/v1/apps.json'
         )
           .with(query: query)
-          .to_return(body: { apps: [] }.to_json, status: 200)
+          .to_return(
+            body: { apps: [] }.to_json,
+            status: 200,
+            headers: { 'Content-type' => 'application/json' }
+          )
       end
 
       where(:params, :query) do
         [
           [{ ids: [100, 200] }, 'ids[0]=100&ids[1]=200'],
           [{ ids: [] }, nil],
-          [{ ids: nil }, 'ids='],
+          [{ ids: nil }, 'ids'],
           [{ codes: ['AAA', 'BBB'] }, 'codes[0]=AAA&codes[1]=BBB'],
           [{ codes: [] }, nil],
-          [{ codes: nil }, 'codes='],
+          [{ codes: nil }, 'codes'],
           [{ name: '名前' }, 'name=名前'],
           [{ name: '' }, 'name='],
-          [{ name: nil }, 'name='],
+          [{ name: nil }, 'name'],
           [{ spaceIds: [100, 200] }, 'spaceIds[0]=100&spaceIds[1]=200'],
           [{ spaceIds: [] }, nil],
-          [{ spaceIds: nil }, 'spaceIds='],
+          [{ spaceIds: nil }, 'spaceIds'],
           [{ limit: 100 }, 'limit=100'],
-          [{ limit: nil }, 'limit='],
+          [{ limit: nil }, 'limit'],
           [{ offset: 100 }, 'offset=100'],
-          [{ offset: nil }, 'offset='],
+          [{ offset: nil }, 'offset'],
           [{}, nil]
         ]
       end
@@ -49,6 +53,26 @@ describe Kintone::Command::Apps do
       let(:params) { nil }
 
       it { expect { subject }.to raise_error NoMethodError }
+    end
+
+    context 'fail to request' do
+      before(:each) do
+        stub_request(
+          :get,
+          'https://example.cybozu.com/k/v1/apps.json'
+        )
+          .with(query: query)
+          .to_return(
+            body: '{"message":"不正なJSON文字列です。","id":"1505999166-897850006","code":"CB_IJ01"}',
+            status: 500,
+            headers: { 'Content-Type' => 'application/json' }
+          )
+      end
+
+      let(:params) { { ids: [100, 200] } }
+      let(:query) { 'ids[0]=100&ids[1]=200' }
+
+      it { expect { subject }.to raise_error Kintone::KintoneError }
     end
   end
 end
