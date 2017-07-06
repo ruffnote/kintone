@@ -7,6 +7,8 @@ class Kintone::KintoneError < StandardError
     @code = messages['code']
     @errors = messages['errors']
     @http_status = http_status
-    super(format('%s [%s] %s(%s)', @http_status, @code, @message_text, @id))
+    message_body = format('%s [%s] %s(%s)', @http_status, @code, @message_text, @id)
+    message_body = format("%s\n%s", message_body, JSON.pretty_generate(@errors)) if @errors.present?
+    super(message_body)
   end
 end

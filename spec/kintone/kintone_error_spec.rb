@@ -62,7 +62,7 @@ describe Kintone::KintoneError do
 
       let(:http_status) { 400 }
 
-      it { is_expected.to eq '400 [CB_VA01] 入力内容が正しくありません。(1505999166-836316825)' }
+      it { is_expected.to start_with "400 [CB_VA01] 入力内容が正しくありません。(1505999166-836316825)\n" }
 
       describe '#message_text' do
         subject { target.message_text }
