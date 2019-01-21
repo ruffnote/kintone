@@ -38,7 +38,7 @@ class Kintone::Api
     #raise res.inspect
 
     @connection =
-      Faraday.new(url: "https://#{domain}", headers: build_headers(user, password)) do |builder|
+      Faraday.new(url: url, headers: build_headers(user, password)) do |builder|
         builder.request :url_encoded
         builder.request :multipart
         builder.response :json, content_type: /\bjson$/
